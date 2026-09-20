@@ -2,6 +2,12 @@
 
 > Wake up. Verify the note. Continue the work.
 
+<p align="center">
+  <img src="./assets/memento-hero.png" alt="A noir investigation desk with nested Polaroids, fragmented notes, a reversed clock, and a red evidence thread" width="100%">
+  <br>
+  <sub>Original artwork created for this project; no film stills or official poster assets.</sub>
+</p>
+
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-portable-111111)](./SKILL.md)
 [![Validate](https://github.com/ruslanlap/memento/actions/workflows/validate.yml/badge.svg)](https://github.com/ruslanlap/memento/actions/workflows/validate.yml)
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
