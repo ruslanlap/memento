@@ -44,6 +44,28 @@ If a link is missing or stale, it verifies first. This is the safeguard Leonard'
 
 See a completed fictional checkpoint in [`examples/MEMENTO.md`](./examples/MEMENTO.md).
 
+## Real case: the launch of this repository
+
+On 2026-09-20, the first `gh auth status` check reported an invalid stored token, blocking publication. A GitHub device login then succeeded, `main` was pushed, and CI passed. A naive append-only log would leave **"GitHub authentication is broken"** looking actionable after it had become false.
+
+A verified Memento snapshot instead reduced the handoff to:
+
+```markdown
+## Polaroids
+- `ruslanlap/memento` is public and tracks `main`. — Evidence: `gh repo view ruslanlap/memento`
+- Validation passed for commit `7f7ae5c`. — Evidence: GitHub Actions run `35511302389`
+
+## Crossed-out Notes
+- "GitHub authentication is broken." — Invalidated by: successful device login and pushes to `main`
+
+## Next Scene
+- Action: None — case closed.
+- Why: The repository is public and the validation workflow passed.
+- Expect: No further publication work.
+```
+
+The useful memory was not the history of every command. It was the current evidence, the invalidated blocker, and the absence of remaining work.
+
 ## Install
 
 Clone the repository into the personal skills directory used by your agent.
