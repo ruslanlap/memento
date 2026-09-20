@@ -4,6 +4,8 @@
 
 Continue yesterday's work in another agent—with evidence for what still holds.
 
+English | [Українська](./README.uk.md)
+
 ## Quick start
 
 Install using the [Skills CLI](https://github.com/vercel-labs/skills) (Node.js ≥22.20 for the tested CLI version; Git-only alternatives below):
