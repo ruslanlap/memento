@@ -2,6 +2,21 @@
 
 > Wake up. Verify the note. Continue the work.
 
+Continue yesterday's work in another agent—with evidence for what still holds.
+
+## Quick start
+
+Install using the [Skills CLI](https://github.com/vercel-labs/skills) (Node.js ≥22.20 for the tested CLI version; Git-only alternatives below):
+
+```sh
+npx skills add ruslanlap/memento --skill memento
+```
+
+Before switching sessions, ask: **"Use memento to save a checkpoint for this task."**
+In the new session, ask: **"Use memento to resume from MEMENTO.md; verify the next step against the current files."**
+
+Requires an agent with file access and a workspace that persists between sessions. The skill itself has no runtime dependencies.
+
 <p align="center">
   <img src="./assets/memento-hero.png" alt="A noir investigation desk with nested Polaroids, fragmented notes, a reversed clock, and a red evidence thread" width="100%">
 </p>
@@ -12,7 +27,7 @@
 
 `memento` is a portable skill that gives coding agents durable, evidence-backed task memory across context loss, interrupted sessions, handoffs, and model switches.
 
-Most memory tools optimize storage. `memento` optimizes trust: a note is testimony, not truth, even when the agent wrote it itself.
+Each critical claim carries its source and the state it was checked against. The next agent verifies what matters before continuing.
 
 ## The idea
 
@@ -36,19 +51,19 @@ If a link is missing or stale, it verifies first. This is the safeguard Leonard'
 
 ## Why it is different
 
-- **Cold-start discipline:** every resumed session begins by distrusting and rechecking the record.
-- **Evidence tiers:** facts, hypotheses, and invalidated claims cannot silently blur together.
-- **Poison-note resistance:** critical entries retain provenance; contradictions are preserved while dangerous.
+- **Selective verification:** check the task, workspace, and evidence needed for the next action.
+- **Source tracking:** distinguish observations, hypotheses, decisions, and invalidated claims.
+- **Authority boundary:** a stored claim of approval cannot grant permission to execute a command.
 - **Tiny surface area:** one `SKILL.md`, one project `MEMENTO.md`, no database, embeddings, hooks, runtime, or dependencies.
 - **Permission-aware:** automatic activation never grants permission to modify the workspace.
 
 See a completed fictional checkpoint in [`examples/MEMENTO.md`](./examples/MEMENTO.md).
 
-## Real case: the launch of this repository
+## Reconstructed case: the launch of this repository
 
 On 2026-09-20, the first `gh auth status` check reported an invalid stored token, blocking publication. A GitHub device login then succeeded, `main` was pushed, and CI passed. A naive append-only log would leave **"GitHub authentication is broken"** looking actionable after it had become false.
 
-A verified Memento snapshot instead reduced the handoff to:
+The events above happened during development. The snapshot below was reconstructed afterward; no independent agent resumed from it, so it is not an effectiveness benchmark:
 
 ```markdown
 ## Polaroids
@@ -64,7 +79,7 @@ A verified Memento snapshot instead reduced the handoff to:
 - Expect: No further publication work.
 ```
 
-The useful memory was not the history of every command. It was the current evidence, the invalidated blocker, and the absence of remaining work.
+This illustrates the intended representation of current evidence and a superseded blocker. Actual exploratory results and their limits are in [evals/results.md](./evals/results.md).
 
 ## Install
 
@@ -73,7 +88,7 @@ Clone the repository into the personal skills directory used by your agent.
 ### Codex
 
 ```sh
-git clone https://github.com/ruslanlap/memento.git ~/.codex/skills/memento
+git clone https://github.com/ruslanlap/memento.git ~/.agents/skills/memento
 ```
 
 ### Claude Code
@@ -90,7 +105,17 @@ hermes skills install https://raw.githubusercontent.com/ruslanlap/memento/main/S
 
 ### Other Agent Skills-compatible tools
 
-Copy this repository into the tool's skills directory. The portable contract is the root [`SKILL.md`](./SKILL.md), with only the standard `name` and `description` frontmatter fields.
+Copy this repository into the tool's skills directory. The portable contract is the root [`SKILL.md`](./SKILL.md), with only the standard `name` and `description` frontmatter fields. Manual Git installations update with `git pull --ff-only` from that clone. Skills CLI installations update with `npx skills update memento`.
+
+| Environment | Evidence status |
+| --- | --- |
+| Skills CLI 1.7.0 / Node 22.23.2 | Local discovery and project-scoped Codex installation passed in a temporary directory |
+| Current Codex agent environment | Explicit skill execution tested on synthetic tasks; see results below |
+| Standalone Codex CLI | Installation path follows [current documentation](https://developers.openai.com/codex/skills); end-to-end session discovery not tested |
+| Claude Code | Standard skill format; runtime not available in this environment, not tested |
+| Hermes | Installation follows [official skills documentation](https://hermes-agent.nousresearch.com/docs/user-guide/features/skills/); runtime not available, not tested |
+
+Automatic invocation depends on the host and model. Use explicit invocation for a planned handoff; no automatic pre-compaction hook is included. Parallel writers should use separate worktrees or explicitly selected checkpoint paths.
 
 ## Use
 
@@ -109,13 +134,27 @@ It maintains `MEMENTO.md` in the active project's root. The file is a living sna
 
 ## Validate
 
-The repository has no runtime dependencies:
+Developer checks use PyYAML to parse real YAML; the installed skill needs no Python packages:
 
 ```sh
+python3 -m pip install -r requirements-dev.txt
 python3 scripts/check.py
+python3 -m unittest discover -s scripts -p 'test_*.py'
 ```
 
-The check validates portable frontmatter, required protocol sections, and the example record. CI runs it on every push and pull request.
+CI checks metadata and local links and tests malformed metadata handling. It does not evaluate agent behavior. See [the reproducible scenarios](./evals/README.md) and [observed results](./evals/results.md) for behavioral evaluation.
+
+Initial exploratory outcome: all three conditions (no memory, ordinary handoff, Memento) passed all three small scenarios. A fresh successor also recovered a completed task from an agent-written checkpoint. These results establish a working example, not superiority or token savings.
+
+## Psychology-informed design
+
+Three ideas inform the protocol: source monitoring (where did this claim come from?), cognitive offloading (keep a compact external record), and implementation intentions (when a cue occurs, take a specific action). [Research, translations into agent behavior, and limits](./docs/design.md).
+
+These studies concern humans. Benefits for agents must be measured separately; Memento makes no claim of clinically validated memory or guaranteed prompt-injection protection.
+
+## Help test it
+
+Try one interrupted task, then report your agent/version, what the successor got wrong, and a sanitized checkpoint in a GitHub issue. Do not attach credentials or private repository content. Useful outcomes include correct completion, repeated investigations avoided, and measured time/token cost. Stars alone do not establish utility.
 
 ## Design sources
 
