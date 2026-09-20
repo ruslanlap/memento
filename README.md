@@ -4,8 +4,6 @@
 
 <p align="center">
   <img src="./assets/memento-hero.png" alt="A noir investigation desk with nested Polaroids, fragmented notes, a reversed clock, and a red evidence thread" width="100%">
-  <br>
-  <sub>Original artwork created for this project; no film stills or official poster assets.</sub>
 </p>
 
 [![Agent Skill](https://img.shields.io/badge/Agent%20Skill-portable-111111)](./SKILL.md)
